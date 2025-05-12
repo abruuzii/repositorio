@@ -1,0 +1,109 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+/**h1 {
+    text-align: center;
+    color: #005f73;
+}
+h2 {
+    color: #0a9396;
+    margin-top: 30px;
+    border-bottom: 2px solid #94b2bd;
+    padding-bottom: 5px;
+}
+img {
+    display: block;
+    margin: 10px auto;
+    border-radius: 80%;
+    border: 2px solid #ccc;
+}**/
+#titulo-principal {
+    text-align: center;
+    color: #005f73;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+.subtitulo {
+    color: #0a9396;
+    font-size: 1.5em;
+    margin-top: 30px;
+    border-bottom: 2px solid #94b2bd;
+    padding-bottom: 5px;
+}
+.datos {
+    margin-left: 20px;
+
+}
+.parrafos{
+    line-height: 1.6;
+}
+
+.foto-redonda{
+    display: block;
+    margin: 10px auto;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+.redes-sociales li{
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: left;
+    margin-top: 20px;
+}
+.redes-sociales {
+    list-style-type: none; /* Elimina los puntos de la lista */
+    padding: 0; /* Elimina el padding predeterminado */
+    margin: 20px 0; /* Agrega un margen superior e inferior */
+    text-align: center; /* Centra el contenido */
+}
+
+.redes-sociales li {
+    margin-bottom: 10px; /* Espaciado entre los elementos */
+}
+
+.redes-sociales a {
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    color: #0a9396; /* Color del texto */
+    font-weight: bold; /* Texto en negrita */
+    font-size: 1.2em; /* Tamaño del texto */
+    transition: color 0.3s ease, transform 0.3s ease; /* Efecto de transición */
+}
+
+.redes-sociales a:hover {
+    color: #005f73; /* Cambia el color al pasar el mouse */
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+}
+/* Estilo para tablas */
+table {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    border-collapse: collapse; /* Elimina los espacios entre bordes */
+    margin-top: 20px; /* Espaciado superior */
+    background-color: #ffffff; /* Fondo blanco */
+    color: #333; /* Texto oscuro */
+}
+
+th, td {
+    border: 1px solid #ccc; /* Bordes de las celdas */
+    padding: 10px; /* Espaciado interno */
+    text-align: left; /* Alineación del texto */
+}
+
+th {
+    background-color: #0a9396; /* Fondo del encabezado */
+    color: #ffffff; /* Texto blanco */
+    font-weight: bold; /* Texto en negrita */
+}
+
+tr:nth-child(even) {
+    background-color: #f4f4f4; /* Fondo alternado para filas pares */
+}
+
+tr:hover {
+    background-color: #e0f7fa; /* Fondo al pasar el mouse */
+}

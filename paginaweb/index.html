@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Ocultamos el checkbox */
+        #menu-toggle {
+            display: none;
+        }
+        
+        /* Estilo cuando el menú está abierto */
+        #menu-toggle:checked ~ #mobile-menu {
+            max-height: 400px; /* Ajusta según el número de elementos del menú */
+            opacity: 1;
+        }
+        
+        /* Estilo del icono de hamburguesa */
+        .menu-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+        }
+        
+        .menu-icon span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        
+        /* Transformamos a "X" cuando está activo */
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-4 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-xl font-bold">Tienda Online</h1>
+            
+            <!-- Menú para pantallas grandes (hidden en móviles) -->
+            <nav class="hidden sm:block">
+                <ul class="flex space-x-4">
+                    <li><a href="#" class="hover:underline">Inicio</a></li>
+                    <li><a href="#" class="hover:underline">Productos</a></li>
+                    <li><a href="#" class="hover:underline">Contactos</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Checkbox invisible para controlar el estado -->
+            <input type="checkbox" id="menu-toggle" class="hidden">
+            
+            <!-- Botón hamburguesa (visible solo en móviles) -->
+            <label for="menu-toggle" class="menu-button sm:hidden cursor-pointer">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </label>
+        </div>
+        
+        <!-- Menú móvil (oculto por defecto) -->
+        <div id="mobile-menu" class="sm:hidden bg-blue-700 overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-in-out">
+            <ul class="flex flex-col space-y-2 px-4 py-2">
+                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Inicio</a></li>
+                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Productos</a></li>
+                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Contactos</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto my-8 px-4 sm:px-6 lg:px-8">
+        <!-- Título y descripción -->
+        <h2 class="text-3xl font-bold text-center mb-4">Catálogo de productos</h2>
+        <p class="text-center text-gray-600 mb-8">Explora nuestra selección de productos disponibles</p>
+
+        <!-- Buscador -->
+    
+        <div class="mb-8">
+            <input 
+                type="text" 
+                id="buscador" 
+                placeholder="Buscar productos..." 
+                class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <!-- Filtros -->
+        <div id="categorias" class="mb-8 flex flex-wrap justify-center gap-4">    
+        </div>
+
+        <!-- Contenedor de productos -->
+        <div class="relative">
+            <!-- Pantalla de carga -->
+            <div id="pantalla-carga" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+                <p class="text-lg font-semibold text-gray-700">Cargando productos...</p>
+            </div>
+
+            <!-- Productos -->
+            <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Tienda Online. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>
