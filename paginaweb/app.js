@@ -92,7 +92,7 @@ function generarFiltros(categorias) {
         boton.textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
         boton.className = `p-2 rounded-lg px-4 py-2 rounded-full ${
             categoriasSeleccionada === categoria ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-        } hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500`;
+        } hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500`;
 
         // Agregar evento para filtrar productos por categoría
         boton.addEventListener('click', () => {
@@ -120,9 +120,10 @@ function mostrarProductos(productos) {
             <img src="${producto.image}" alt="${producto.title}" class="w-32 h-32 object-contain mb-4">
             <p class="text-lg font-semibold mb-2">${producto.title}</p>
             <p class="text-gray-600 mb-4">Precio: $${producto.price}</p>
-            <button class="btn bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-                Agregar al carrito
-            </button>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition mb-2">Agregar al carrito</button>
+            <a href="detalle.html?id=${producto.id}" class=" bg-black text-white px-4 py-2 rounded shadow hover:bg-[#818c8a] transition font-semibold text-center block">
+                Detalles
+            </a>
         `;
         contenedorProductos.appendChild(productoDiv);
     });

@@ -50,83 +50,85 @@
         
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gradient-to-br from-blue-200 to-black-200 min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-blue-600 text-white py-4 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <h1 class="text-xl font-bold">Tienda Online</h1>
-            
-            <!-- Menú para pantallas grandes (hidden en móviles) -->
-            <nav class="hidden sm:block">
-                <ul class="flex space-x-4">
-                    <li><a href="#" class="hover:underline">Inicio</a></li>
-                    <li><a href="#" class="hover:underline">Productos</a></li>
-                    <li><a href="#" class="hover:underline">Contactos</a></li>
-                </ul>
+    <header class="bg-[#050e34] shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-3">
+            <div class="flex items-center gap-3">
+                <img src="images/logo.jpg" alt="Logo" class="w-10 h-10 object-contain rounded-full bg-gray-200" id="logo-img">
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">Tienda Online</h1>
+            </div>
+            <!-- Menú para escritorio -->
+            <nav class="hidden md:flex gap-6 items-center">
+                <a href="#" class="text-white font-medium hover:text-blue-900 transition">Inicio</a>
+                <a href="#" class="text-white font-medium hover:text-blue-900 transition">Productos</a>
+                <a href="contactos.html" class="text-white font-medium hover:text-blue-900 transition">Contactos</a>
+                <span class="w-px h-6 bg-white self-center"></span> <!-- Barra vertical --> 
+                <div id="cerrar-sesion-escritorio"></div>
             </nav>
-            
-            <!-- Checkbox invisible para controlar el estado -->
-            <input type="checkbox" id="menu-toggle" class="hidden">
-            
-            <!-- Botón hamburguesa (visible solo en móviles) -->
-            <label for="menu-toggle" class="menu-button sm:hidden cursor-pointer">
-                <div class="menu-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+            <!-- Menú hamburguesa móvil -->
+            <div class="md:hidden">
+                <input type="checkbox" id="menu-toggle" class="hidden peer">
+                <label for="menu-toggle" class="cursor-pointer flex flex-col gap-1">
+                    <span class="block w-7 h-1 bg-blue-700 rounded"></span>
+                    <span class="block w-7 h-1 bg-blue-700 rounded"></span>
+                    <span class="block w-7 h-1 bg-blue-700 rounded"></span>
+                </label>
+                <div class="absolute right-4 top-16 bg-white shadow-lg rounded-lg py-2 px-4 flex flex-col gap-2 w-40 transition-all duration-300 scale-0 peer-checked:scale-100 origin-top-right">
+                    <a href="#" class="text-blue-700 font-medium hover:text-blue-900 transition">Inicio</a>
+                    <a href="#" class="text-blue-700 font-medium hover:text-blue-900 transition">Productos</a>
+                    <a href="contactos.html" class="text-blue-700 font-medium hover:text-blue-900 transition">Contactos</a>
+                    <span class="w-full h-px bg-blue-200 my-1"></span> <!-- Barra horizontal para móvil -->
+                    <div id="cerrar-sesion-movil"></div>
                 </div>
-            </label>
-        </div>
-        
-        <!-- Menú móvil (oculto por defecto) -->
-        <div id="mobile-menu" class="sm:hidden bg-blue-700 overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-in-out">
-            <ul class="flex flex-col space-y-2 px-4 py-2">
-                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Inicio</a></li>
-                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Productos</a></li>
-                <li><a href="#" class="block hover:bg-blue-600 px-2 py-1 rounded">Contactos</a></li>
-            </ul>
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto my-8 px-4 sm:px-6 lg:px-8">
+    <main class="flex-1 container mx-auto px-4 py-8">
         <!-- Título y descripción -->
-        <h2 class="text-3xl font-bold text-center mb-4">Catálogo de productos</h2>
-        <p class="text-center text-gray-600 mb-8">Explora nuestra selección de productos disponibles</p>
+        <div class="mb-8 text-center">
+            <h2 class="text-4xl font-extrabold text-black mb-2">Catálogo de productos</h2>
+            <p class="text-lg text-blue-600">Explora nuestra selección de productos disponibles</p>
+        </div>
 
         <!-- Buscador -->
-    
-        <div class="mb-8">
+        <div class="mb-6 flex justify-center">
             <input 
                 type="text" 
                 id="buscador" 
                 placeholder="Buscar productos..." 
-                class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full max-w-lg border-2 border-blue-300 rounded-full px-5 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white shadow-sm"
             />
         </div>
 
         <!-- Filtros -->
-        <div id="categorias" class="mb-8 flex flex-wrap justify-center gap-4">    
+        <div id="categorias" class="mb-8 flex flex-wrap justify-center gap-3">
+            <!-- Los filtros se generan dinámicamente -->
         </div>
 
         <!-- Contenedor de productos -->
         <div class="relative">
             <!-- Pantalla de carga -->
-            <div id="pantalla-carga" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
-                <p class="text-lg font-semibold text-gray-700">Cargando productos...</p>
+            <div id="pantalla-carga" class="absolute inset-0 bg-white/80 flex items-center justify-center z-10 hidden">
+                <p class="text-xl font-semibold text-blue-700 animate-pulse">Cargando productos...</p>
             </div>
-
             <!-- Productos -->
-            <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+            <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2025 Tienda Online. Todos los derechos reservados.</p>
+    <footer class="bg-white border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-blue-700 font-medium">
+            &copy; 2025 Tienda Online. Todos los derechos reservados.
         </div>
     </footer>
     <script src="app.js"></script>
+    <script
+        src="logout.js">
+        // Función para cerrar sesión
+    </script>
 </body>
 </html>
