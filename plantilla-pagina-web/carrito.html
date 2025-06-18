@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - TiendaOnline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-serif bg-white to-black min-h-screen flex flex-col">
+    <header class="bg-yellow-300 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-5">
+            <div class="flex items-center gap-3">
+                <img src="images/logo.png" alt="Logo" class="w-10 h-10 object-contain " id="logo-img">
+                <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+                Tienda <span class="italic text-black">Online</span>
+                    </h1>
+            </div>        <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+            <ul class="flex space-x-4">
+                <li><a href="index.html" class="text-black-900 hover:text-white transition font-bold">Inicio</a></li>
+                <li><a href="contacto.html" class="text-black-900 hover:text-white transition font-bold">Contacto</a></li>
+                <li><a href="mis-pedidos.html" class="text-black-900 hover:text-white transition font-bold">Mis Pedidos</a></li>
+
+            </ul>
+            <button onclick="logout()"
+                class="ml-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-gray-800 hover:text-yellow-999 transition shadow-lg">
+                Cerrar sesión
+            </button>
+            <script>
+                function logout() {
+                    const token = localStorage.getItem('authToken');
+                    if (token) {
+                        fetch('http://127.0.0.1:8000/api/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        })
+                        .finally(() => {
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('rol');
+                            window.location.href = 'login.html';
+                        });
+                    } else {
+                        window.location.href = 'login.html';
+                    }
+                }
+            </script>
+        </nav>
+    </header>
+    <main class="max-w-3xl mx-auto bg-black/40 rounded-xl shadow-lg p-8 mt-8">
+        <h2 class="text-3xl font-bold mb-6 text-black drop-shadow">Productos agregados al carrito</h2>
+        <div id="carrito-contenido" class="mb-8"></div>
+        <div id="carrito-total" class="text-2xl font-bold text-black underline  mb-6"></div>
+        <button id="btn-comprar" class="bg-yellow-500 text-black px-6 py-3 rounded-lg hover:bg-yellow-300 transition-colors duration-300 font-bold text-xl">Comprar</button>
+        <div id="carrito-mensaje" class="mt-6 text-lg"></div>
+        <hr class="my-8 border-blue-400/30">
+        <h3 class="text-2xl font-bold mb-4 text-black">Mis Direcciones Guardadas</h3>
+        <div id="direcciones-contenedor"></div>
+    </main>
+    <footer class="bg-white border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-white bg-black font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script src="carrito.js"></script>
+<script>
+function logout() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        fetch('http://127.0.0.1:8000/api/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        }).finally(() => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('rol');
+            window.location.href = 'login.html';
+        });
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('authToken');
+    const contenedor = document.getElementById('direcciones-contenedor');
+    const btnComprar = document.getElementById('btn-comprar');
+    contenedor.innerHTML = '<p class="text-white">Cargando direcciones...</p>';
+
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/usuario/direcciones', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!res.ok) {
+            contenedor.innerHTML = '<p class="text-red-400">No se pudieron cargar las direcciones.</p>';
+            btnComprar.disabled = true;
+            return;
+        }
+
+        const direcciones = await res.json();
+        let html = '';
+
+        if (direcciones.length > 0) {
+            html += '<h3 class="text-lg text-black mb-2">Selecciona una dirección:</h3>';
+            html += '<form id="form-direcciones" class="mb-4">';
+            direcciones.forEach(dir => {
+                html += `
+                    <label class="block text-white mb-2">
+                        <input type="radio" name="direccion_id" value="${dir.id}" class="mr-2" required>
+                        ${dir.direccion}, ${dir.provincia} (${dir.telefono})
+                    </label>
+                `;
+            });
+            html += '</form>';
+        }
+
+        html += `
+            <div id="form-nueva-direccion" class="mt-6">
+                <h4 class="text-black mb-2">¿Agregar nueva dirección?</h4>
+                <input type="text" id="nueva-direccion" placeholder="Dirección" class="block mb-2 w-full p-2 rounded" />
+                <input type="text" id="nueva-provincia" placeholder="Provincia" class="block mb-2 w-full p-2 rounded" />
+                <input type="text" id="nueva-ciudad" placeholder="Ciudad" class="block mb-2 w-full p-2 rounded" />
+                <input type="text" id="nueva-telefono" placeholder="Teléfono" class="block mb-4 w-full p-2 rounded" />
+                <button id="btn-guardar-direccion" type="button" class="bg-yellow-500 text-black px-6 py-3 rounded-lg hover:bg-yellow-300 transition-colors duration-300 font-bold text-xl">Guardar y comprar</button>
+            </div>
+        `;
+
+        contenedor.innerHTML = html;
+            document.getElementById('btn-guardar-direccion')?.addEventListener('click', guardarNuevaDireccion);
+
+    } catch (e) {
+        console.error("Error al cargar direcciones:", e);
+        contenedor.innerHTML = '<p class="text-red-400">Error al cargar las direcciones.</p>';
+        btnComprar.disabled = true;
+    }
+});
+
+async function guardarNuevaDireccion() {
+    const direccion = document.getElementById('nueva-direccion').value.trim();
+    const provincia = document.getElementById('nueva-provincia').value.trim();
+    const ciudad = document.getElementById('nueva-ciudad').value.trim();
+    const telefono = document.getElementById('nueva-telefono').value.trim();
+
+    if (!direccion || !provincia || !ciudad || !telefono) {
+        alert("Por favor completa todos los campos.");
+        return;
+    }
+
+    // ✅ Validación: el teléfono debe contener exactamente 10 dígitos numéricos
+    if (!/^\d{10}$/.test(telefono)) {
+        alert("El número de teléfono debe tener exactamente 10 dígitos.");
+        return;
+    }
+
+    const token = localStorage.getItem('authToken');
+
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/usuario/direcciones', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ direccion, provincia, ciudad, telefono })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Error al guardar la dirección.");
+            return;
+        }
+
+        if (carritoVacio()) {
+            alert("No puedes realizar un pedido sin productos en el carrito.");
+            return;
+        }
+
+        alert("Dirección guardada correctamente. Realizando pedido...");
+
+        realizarCompra(data.id || data.direccion?.id);
+
+    } catch (error) {
+        console.error("Error al guardar dirección:", error);
+        alert("Error de conexión.");
+    }
+}
+
+async function realizarCompra(direccionId) {
+    const token = localStorage.getItem('authToken');
+
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                direccion: {
+                    id: direccionId
+                }
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Error al procesar el pedido.");
+            return;
+        }
+
+        alert("Pedido realizado con éxito.");
+        window.location.href = "index.html"; // redirige al resumen o donde necesites
+
+    } catch (error) {
+        console.error("Error al crear el pedido:", error);
+        alert("Error de conexión.");
+    }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TiendaOnline - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-serif bg-white to-black min-h-screen flex flex-col">
+    <script>
+        if (!localStorage.getItem('authToken') || localStorage.getItem('rol') !== 'admin') {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <header class="bg-yellow-300 shadow-md sticky top-0 z-50 y-1">
+        <div class="container mx-auto flex justify-between items-center px-4 py-5">
+            <div class="flex items-center gap-3">
+                <img src="images/logo.png" alt="Logo" class="w-20 h-20 object-contain" id="logo-img">
+                <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+                Tienda <span class="italic text-black">Online</span>
+                    </h1>
+            </div>        <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+            <ul class="flex space-x-4">
+                <li><a href="index.html" class="text-black-900 hover:text-white transition">Inicio</a></li>
+                <li><a href="contacto.html" class="text-black-900 hover:text-white transition">Contacto</a></li>
+                <li><a href="pedidos.html" class="text-black-900 hover:text-white transition">Administrar Pedidos</a></li>
+                <li><a href="crud.html" class="text-black-900 hover:text-white transition">CRUD Productos</a></li>
+
+            </ul>
+            <button onclick="logout()"
+                class="ml-6 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 hover:text-yellow-999 transition shadow-lg">
+                Cerrar sesión
+            </button>
+            <script>
+                function logout() {
+                    const token = localStorage.getItem('authToken');
+                    if (token) {
+                        fetch('http://127.0.0.1:8000/api/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        })
+                        .finally(() => {
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('rol');
+                            window.location.href = 'login.html';
+                        });
+                    } else {
+                        window.location.href = 'login.html';
+                    }
+                }
+            </script>
+        </nav>
+    </header>
+    <main class="flex justify-center items-center py-8 mb-9">
+        <section>
+            <div class="text-center">
+                <h2 class="text-6xl font-bold py-6 text-black-900 drop-shadow">Catálogo de Productos</h2>
+            </div>
+        </section>
+    </main>
+    <main>
+        <div id="buscador" class="flex flex-col gap-8 items-center mb-8">
+            <input type="text" id="busqueda" placeholder="Buscar productos..."
+                class="w-full max-w-md border border-black bg-white text-black rounded-lg px-4 py-2 placeholder-gray">
+            <div id="categorias" class="flex flex-wrap justify-center items-center gap-2">
+            </div>
+        </div>
+    </main>
+    <main>
+        <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+        </div>
+    </main>
+    
+    <script src="app.js"></script>
+    <footer class="bg-black border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-white bg-black font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+</body>
+</html>
