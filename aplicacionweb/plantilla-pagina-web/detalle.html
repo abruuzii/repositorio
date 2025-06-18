@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+
+
+  <meta charset="UTF-8" />
+  <title>Detalle del Producto</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800 flex flex-col">
+
+  
+ <header class="bg-yellow-300 shadow-md sticky top-0 z-50">
+  <div class="container mx-auto flex justify-between items-center px-4 py-5">
+    <div class="flex items-center gap-3">
+      <img src="images/logo.png" alt="Logo" class="w-10 h-10 object-contain " id="logo-img">
+      <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+        Tienda <span class="italic text-black">Online</span>
+      </h1>
+    </div>
+    <!-- Botón hamburguesa -->
+    <button id="menu-toggle" class="md:hidden focus:outline-none">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    <!-- Menú normal en desktop -->
+    <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+      <a href="index.html" class="text-black-900 font-black hover:white transition">Inicio</a>
+      <a href="contacto.html" class="text-black-900 font-black hover:white transition">Contacto</a>
+      <a href="mis-pedidos.html" class="text-black-900 font-black hover:white transition">Mis Pedidos</a>
+      <a href="carrito.html" id="btn-carrito-header" class="relative inline-block ml-2">
+        <img src="images/icons8-carrito-de-compras-24.png" alt="Carrito" class="w-8 h-8 object-contain" />
+        <span id="carrito-contador"
+          class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow hidden">
+          0
+        </span>
+      </a>
+      <div id="auth-btn-container" class="ml-6"></div>
+
+    </nav>
+  </div>
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="md:hidden hidden px-4 pb-4">
+    <a href="index.html" class="block py-2 text-black-900 hover:white transition">Inicio</a>
+    <a href="contacto.html" class="block py-2 text-black-900 hover:white transition">Contacto</a>
+    <a href="mis-pedidos.html" class="block py-2 text-black-900 hover:white transition">Mis Pedidos</a>
+    <a href="carrito.html" id="btn-carrito-header-mobile" class="relative inline-block ml-2">
+      <img src="images/icons8-carrito-de-compras-24.png" alt="Carrito" class="w-8 h-8 object-contain" />
+      <span id="carrito-contador-mobile"
+        class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow hidden">
+        0
+      </span>
+    </a>
+    <div id="auth-btn-container" class="ml-6"></div>
+
+  </div>
+</header>
+<!-- Toast para mostrar mensajes -->
+<div id="toast" class="fixed top-6 right-6 bg-red-600 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 z-50"></div>
+
+<script>
+  function logout() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      fetch('http://127.0.0.1:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      }).finally(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.href = 'login.html';
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('authToken');
+    const rol = localStorage.getItem('rol');
+
+    // Botones de sesión
+    const authContainer = document.getElementById('auth-btn-container');
+    const authContainerMobile = document.getElementById('auth-btn-container-mobile');
+
+    const btnHTML = token ? `
+      <button onclick="logout()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-gray-800 transition shadow-lg">Cerrar sesión</button>
+    ` : `
+      <a href="login.html" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-lg">Iniciar Sesión</a>
+    `;
+
+    if (authContainer) authContainer.innerHTML = btnHTML;
+    if (authContainerMobile) authContainerMobile.innerHTML = btnHTML;
+
+    // Toast
+    function mostrarToast(mensaje) {
+      const toast = document.getElementById('toast');
+      toast.textContent = mensaje;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+
+    // Validación de botones protegidos
+    const enlacesProtegidos = [
+      { id: 'btn-carrito-header', destino: 'carrito.html' },
+      { id: 'btn-carrito-header-mobile', destino: 'carrito.html' },
+      { selector: 'a[href="mis-pedidos.html"]', destino: 'mis-pedidos.html' }
+    ];
+
+    enlacesProtegidos.forEach(({ id, selector, destino }) => {
+      const btn = id ? document.getElementById(id) : document.querySelector(selector);
+      if (btn) {
+        btn.addEventListener('click', function (e) {
+          const token = localStorage.getItem('authToken');
+          if (!token || !rol) {
+            e.preventDefault();
+            mostrarToast("Debes iniciar sesión para acceder.");
+          } else {
+            window.location.href = destino;
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  document.getElementById('menu-toggle').addEventListener('click', function () {
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
+  <main class="flex-1 flex justify-center items-center p-8">
+    <div id="detalleProducto" class="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl flex flex-col md:flex-row gap-8">
+     
+      <img src="URL" alt="Producto" class="w-full md:w-1/2 rounded-md object-cover" />
+      <div class="flex-1">
+  <h2 id="producto-titulo" class="text-2xl font-semibold mb-2">Nombre del Producto</h2>
+  <p id="producto-descripcion" class="text-gray-600 mb-4">Descripción del producto...</p>
+  <p id="producto-precio" class="text-lg font-bold text-green-600 mb-4">$Precio</p>
+  
+  <button id="btn-agregar-carrito" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-300">
+    Agregar al carrito
+  </button>
+</div>
+
+         </div>
+  </main>
+
+  <!-- Header en detalle.html -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('rol') === 'admin') {
+        document.getElementById('btn-mis-pedidos')?.style.display = 'none';
+        document.getElementById('btn-carrito')?.style.display = 'none';
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const rol = localStorage.getItem('rol');
+  
+  if (rol === 'admin') {
+    const btnPedidos = document.getElementById('btn-mis-pedidos');
+    const btnCarrito = document.getElementById('btn-carrito');
+
+    if (btnPedidos) btnPedidos.style.display = 'none';
+    if (btnCarrito) btnCarrito.style.display = 'none';
+  }
+});
+</script>
+
+  
+  <script src="detalleprod.js"></script>
+</body>
+</html>

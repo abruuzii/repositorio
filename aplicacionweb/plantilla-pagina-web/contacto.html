@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactos - Licorería EL CHAGRA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #menu-toggle { display: none; }
+        #menu-toggle:checked ~ #mobile-menu { max-height: 400px; opacity: 1; }
+        .menu-icon { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; }
+        .menu-icon span { display: block; width: 100%; height: 2px; background-color: white; transition: all 0.3s ease; }
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(2) { opacity: 0; }
+        #menu-toggle:checked + .menu-button .menu-icon span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .menu-usuario { display: none; position: absolute; right: 0; top: 110%; background: white; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15); min-width: 160px; z-index: 50; }
+        .menu-usuario.active { display: block; }
+        .menu-usuario a, .menu-usuario button { display: block; width: 100%; padding: 0.75rem 1rem; text-align: left; background: none; border: none; color: #1e3a8a; font-weight: 500; cursor: pointer; }
+        .menu-usuario a:hover, .menu-usuario button:hover { background: #f1f5f9; }
+    </style>
+</head>
+<body class="font-serif bg-white to-black min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-yellow-300 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-5">
+            <div class="flex items-center gap-3">
+                <img src="images/logo.png" alt="Logo" class="w-10 h-10 object-contain  " id="logo-img">
+                <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+                Tienda <span class="italic text-black">Online</span>
+                    </h1>
+            </div>        <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+            <ul class="flex space-x-4">
+                <li><a href="index.html" class="text-black-900 font-black hover:text-white transition">Inicio</a></li>
+                <li><a href="contacto.html" class="text-black-900 font-black hover:text-white transition">Contacto</a></li>
+               <li><a href="mis-pedidos.html" id="btn-mis-pedidos" class="text-black-900 font-black hover:text-white transition">Mis Pedidos</a></li>
+                <li><a href="carrito.html" id="btn-carrito" class="text-black-900 font-black hover:text-white transition">Carrito</a></li>
+           
+            </ul>
+           <div id="auth-btn-container"></div>
+            <script>
+                function logout() {
+                    const token = localStorage.getItem('authToken');
+                    if (token) {
+                        fetch('http://127.0.0.1:8000/api/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            }
+                        })
+                        .finally(() => {
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('rol');
+                            window.location.href = 'login.html';
+                        });
+                    } else {
+                        window.location.href = 'login.html';
+                    }
+                }
+            </script>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+    <div class="mb-8 text-center">
+        <h2 class="text-4xl font-extrabold text-black mb-2">Contáctanos</h2>
+        <p class="text-lg text-yellow-999">¡Encuéntranos en nuestras redes sociales!</p>
+    </div>
+    <div class="mt-8">
+        <ul class="flex flex-col items-center space-y-4">
+            <li class="flex items-center space-x-3">
+                <img src="images/facebook.png" alt="Facebook" class="w-8 h-8">
+                <a href="#" class="text-blue-600 hover:underline text-lg font-semibold">Facebook</a>
+            </li>
+            <li class="flex items-center space-x-3">
+                <img src="images/social.png" alt="Instagram" class="w-8 h-8">
+                <a href="#" class="text-pink-600 hover:underline text-lg font-semibold">Instagram</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Contenedor para el mapa -->
+    <p class="text-lg py-3 text-center">¡O visítanos en nuestro local!</p>
+
+    <div class="w-full flex justify-center my-8">
+      <div id="map" class="w-full max-w-xl h-80 rounded-lg shadow-lg border"></div>
+    </div>
+    <p class="text-lg text-center xt-yellow-999">¡Estamos ubicados en el corazón de la ciudad!</p>
+    <p class="text-lg text-center text-yellow-999">Dirección: Av. Amazonas y Av. Colón, Quito, Ecuador</p>
+    <!-- Script de Google Maps -->
+    <script>
+      function initMap() {
+        // Cambia lat y lng por la ubicación que desees mostrar
+        const ubicacion = { lat: -0.180653, lng: -78.467834 }; // Ejemplo: Quito, Ecuador
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 15,
+          center: ubicacion,
+        });
+        new google.maps.Marker({
+          position: ubicacion,
+          map: map,
+          title: "Nuestra ubicación",
+        });
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&callback=initMap"></script>
+</main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-white bg-black font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const crudContainer = document.getElementById('crud-link-container');
+        if (localStorage.getItem('is_admin') === 'true') {
+          crudContainer.innerHTML = `
+            <a href="panel-administrador.html" class="text-white font-medium hover:text-blue-900 transition">
+              CRUD Productos
+            </a>
+          `;
+        }
+      });
+    </script>
+    <script src="app.js"></script>
+    <script src="carrito.js"></script>
+    <div id="vista-carrito" class="hidden fixed top-16 right-6 bg-white shadow-lg rounded p-4 w-80 z-20">
+      <h3 class="font-bold mb-2">Tu Carrito</h3>
+      <div id="carrito-items" class="max-h-60 overflow-y-auto text-sm"></div>
+      <div id="carrito-total" class="font-bold text-right text-blue-900 my-2"></div>
+      <button onclick="location.href='resumen-compra.html'" class="mt-4 bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700 transition">
+        Ir a Pagar
+      </button>
+    </div>
+    <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const authBtnContainer = document.getElementById('auth-btn-container');
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      authBtnContainer.innerHTML = `
+        <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300">Cerrar Sesión</button>
+      `;
+      document.getElementById('logout-btn').addEventListener('click', function() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.reload();
+      });
+    } else {
+      authBtnContainer.innerHTML = `
+        <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300">Iniciar Sesión</a>
+      `;
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const rol = localStorage.getItem('rol');
+    
+    if (rol === 'admin') {
+      const btnPedidos = document.getElementById('btn-mis-pedidos');
+      const btnCarrito = document.getElementById('btn-carrito');
+
+      if (btnPedidos) btnPedidos.style.display = 'none';
+      if (btnCarrito) btnCarrito.style.display = 'none';
+    }
+  });
+</script>
+<!-- Toast -->
+<div id="toast" class="fixed top-6 right-6 bg-red-600 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 z-50"></div>
+
+<script>
+  function logout() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      fetch('http://127.0.0.1:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      }).finally(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.href = 'login.html';
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('authToken');
+    const rol = localStorage.getItem('rol');
+
+    const authContainer = document.getElementById('auth-btn-container');
+    const btnHTML = token ? `
+      <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-gray-800 shadow-lg">Cerrar Sesión</button>
+    ` : `
+      <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 shadow-lg">Iniciar Sesión</a>
+    `;
+    authContainer.innerHTML = btnHTML;
+
+    function mostrarToast(mensaje) {
+      const toast = document.getElementById('toast');
+      toast.textContent = mensaje;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+
+    // Protege los botones Mis pedidos y Carrito
+    const btnCarrito = document.getElementById('btn-carrito');
+    const btnPedidos = document.getElementById('btn-mis-pedidos');
+
+    if (btnCarrito) {
+      btnCarrito.addEventListener('click', function (e) {
+        if (!token || !rol) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          this.blur();
+          setTimeout(() => this.focus(), 0);
+          mostrarToast('Debes iniciar sesión para acceder al carrito.');
+        }
+      });
+    }
+
+    if (btnPedidos) {
+      btnPedidos.addEventListener('click', function (e) {
+        if (!token || !rol) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          this.blur();
+          setTimeout(() => this.focus(), 0);
+          mostrarToast('Debes iniciar sesión para ver tus pedidos.');
+        }
+      });
+    }
+
+    // Oculta botones si es admin
+    if (rol === 'admin') {
+      if (btnPedidos) btnPedidos.style.display = 'none';
+      if (btnCarrito) btnCarrito.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>

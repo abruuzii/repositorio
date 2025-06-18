@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Tienda Online</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 to-yellow-300 min-h-screen flex flex-col">
+    <div class="login-container w-full max-w-sm mx-auto p-8 bg-white rounded-xl shadow-lg">
+        <div class="flex items-center justify-center mb-6 gap-3">
+            <!-- Logo opcional -->
+            <img src="images/logo.png" alt="Logo" class="w-12 h-12 object-contain rounded-full bg-gray-200">
+            <h1 class="text-2xl font-extrabold text-black-900 tracking-tight">Licorería EL CHAGRA</h1>
+        </div>
+        <h2 class="text-3xl font-bold mb-6 text-center text-yellow-500 ">Iniciar Sesión</h2>
+        <form id="loginForm" class="space-y-4">
+            <input
+  type="text"
+  id="username"
+  placeholder="Usuario o Email"
+  required
+  class="w-full border border-black bg-white text-black rounded-lg px-3 py-2 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400 placeholder-gray"
+/>
+
+<input
+  type="password"
+  id="password"
+  placeholder="Contraseña"
+  required
+  class="w-full border border-black bg-white text-black rounded-lg px-3 py-2 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400 placeholder-gray"
+/>
+
+            <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray hover:text-yellow-500 transition shadow-lg">Entrar</button>
+            <div class="error text-red-400 mt-2 text-center" id="errorMsg"></div>
+        </form>
+        <div class="mt-8">
+            <h3 class="text-xl font-semibold mb-2 text-yellow-500 text-center">¿No tienes una cuenta?</h3>
+            <form id="registerForm" class="space-y-3">
+                <input type="text" id="reg_nombre" placeholder="Ingrese su Nombre" required class="w-full border border-black bg-white text-black rounded-lg px-3 py-2 placeholder-gray" />
+                <input type="email" id="reg_email" placeholder="Ingrese su Email" required class="w-full border border-black bg-white text-black rounded-lg px-3 py-2 placeholder-gray" />
+                <input type="password" id="reg_password" placeholder="Ingrese su Contraseña" required class="w-full border border-black bg-white text-black rounded-lg px-3 py-2 placeholder-gray" />
+                <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray hover:text-yellow-500 transition shadow">Registrarse</button>
+                <div class="text-green-400 mt-2 text-center" id="registerMsg"></div>
+            </form>
+        </div>
+        <h3 class="text-xl py-2 font-semibold  text-yellow-500 text-center">Acceso temporal</h3>
+<button
+  id="btn-catalogo"
+  type="button"
+  class="w-full mt-4 bg-gray-300 text-black py-2 rounded-lg hover:bg-gray-400 transition shadow"
+>
+  Ingrese como invitado
+</button>
+    </div>
+     <footer class="bg-white border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-black-700 font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script>
+
+        // Guarda el token en localStorage después de iniciar sesión correctamente
+        function guardarToken(user) {
+            localStorage.setItem('authToken', user.access_token);
+            localStorage.setItem('rol', user.user.rol);
+        }
+        // Listener para el formulario de login
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    const errorMsg = document.getElementById('errorMsg');
+                    errorMsg.textContent = '';
+
+                    try {
+                        const res = await fetch('http://127.0.0.1:8000/api/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email:username, password:password })
+                        });
+                        let data = {};
+                        let text = await res.text();
+                        try {
+                            data = JSON.parse(text);
+                        } catch (e) {
+                            data = {};
+                        }
+                        if (res.ok && data.access_token && data.user.rol === 'cliente') {
+                            guardarToken(data);
+                            window.location.href = 'index.html';
+                        } else if (res.ok && data.access_token && data.user.rol === 'admin') {
+                            guardarToken(data);
+                            window.location.href = 'indexadmin.html';
+                        } else if (res.status === 401 || res.status === 400) {
+                            errorMsg.textContent = data.message || 'Credenciales inválidas.';
+                        } else if (data.error) {
+                            errorMsg.textContent = data.error;
+                        } else {
+                            errorMsg.textContent = 'Credenciales inválidas';
+                        }
+                    } catch (err) {
+                        errorMsg.textContent = 'Error al conectar con el servidor.';
+                    }
+                });
+            }
+
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const nombre = document.getElementById('reg_nombre').value;
+                    const email = document.getElementById('reg_email').value;
+                    const password = document.getElementById('reg_password').value;
+                    const registerMsg = document.getElementById('registerMsg');
+                    registerMsg.textContent = '';
+
+                    try {
+                        const res = await fetch('http://127.0.0.1:8000/api/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: nombre,
+                                email: email,
+                                password: password,
+                                password_confirmation: password // para validación Laravel
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.id) {
+                            registerMsg.textContent = 'Registro exitoso. Puedes iniciar sesión.';
+                            registerForm.reset();
+                        } else if (data.error) {
+                            registerMsg.textContent = data.error;
+                        } else {
+                            registerMsg.textContent = 'Error en el registro. Inténtalo de nuevo.';
+                        }
+                    } catch (err) {
+                        registerMsg.textContent = 'Error al conectar con el servidor.';
+                    }
+                });
+            }
+
+            document.getElementById('btn-catalogo').onclick = function() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('rol');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - TiendaOnline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-serif bg-white to-black min-h-screen flex flex-col">
+    <header class="bg-yellow-300 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-5">
+            <div class="flex items-center gap-3">
+                <img src="images/logo.png" alt="Logo" class="w-10 h-10 object-contain " id="logo-img">
+                <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+                    Tienda <span class="italic text-black">Online</span>
+                </h1>
+            </div>
+            <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+                <ul class="flex space-x-4">
+                    <li><a href="index.html" class="text-black-900 font-black hover:text-black transition">Inicio</a></li>
+                    <li><a href="contacto.html" class="text-black-900 font-black hover:text-black transition">Contacto</a></li>
+                    <li><a href="carrito.html" class="text-black-900 font-black hover:text-black transition">Carrito</a></li>
+                </ul>
+                <button onclick="logout()"
+                    class="ml-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-gray-800 hover:text-yellow-999 transition shadow-lg">
+                    Cerrar sesión
+                </button>
+            </nav>
+        </div>
+    </header>
+    <main class="max-w-3xl mx-auto bg-[#f7fc8d] rounded-xl shadow-lg p-8 mt-8">
+        <h2 class="text-3xl font-bold mb-6 text-black drop-shadow">Mis pedidos realizados</h2>
+        <div id="mis-pedidos-contenido"></div>
+        <div id="mis-pedidos-mensaje" class="mt-6 text-lg"></div>
+    </main>
+    <footer class="bg-black text-white border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-black-700 font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script>
+    function logout() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.href = 'login.html';
+    }
+    </script>
+    <script src="mis-pedidos.js"></script>
+</body>
+</html>

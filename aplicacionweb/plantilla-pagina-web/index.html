@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TiendaOnline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-white text-blue-100 min-h-screen">
+    
+   <header class="bg-yellow-300 shadow-md sticky top-0 z-50">
+  <div class="container mx-auto flex justify-between items-center px-4 py-3">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <img src="images/logo.png" alt="Logo" class="w-20 h-20 object-contain" id="logo-img">
+      <h1 class="font-serif text-3xl font-bold text-black tracking-wider">
+        Tienda <span class="italic text-black">Online</span>
+      </h1>
+    </div>
+
+    <!-- Botón hamburguesa -->
+    <button id="menu-toggle" class="md:hidden text-black focus:outline-none">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <!-- Menú escritorio -->
+    <nav id="menu" class="hidden md:flex md:items-center md:space-x-4">
+      <ul class="flex space-x-4">
+        <li><a href="index.html" class="text-black font-black hover:text-white transition">Inicio</a></li>
+        <li><a href="contacto.html" class="text-black font-black hover:text-white transition">Contacto</a></li>
+        <li><a href="#" id="btn-pedidos" class="text-black font-black hover:text-white transition">Mis Pedidos</a></li>
+        <li>
+          <a href="carrito.html" id="btn-carrito-header" class="relative inline-block ml-2">
+            <img src="images/icons8-carrito-de-compras-24.png" alt="Carrito" class="w-8 h-8 object-contain" />
+            <span id="carrito-contador"
+              class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow hidden">
+              0
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div id="auth-btn-container" class="ml-4"></div>
+    </nav>
+  </div>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="md:hidden hidden bg-yellow-200 px-4 pb-4">
+    <ul class="space-y-2 pt-4">
+      <li><a href="index.html" class="block text-black font-bold">Inicio</a></li>
+      <li><a href="contacto.html" class="block text-black font-bold">Contacto</a></li>
+      <li><a href="#" id="btn-pedidos-mobile" class="block text-black font-bold">Mis Pedidos</a></li>
+      <li>
+        <a href="carrito.html" id="btn-carrito-mobile" class="relative inline-block text-black font-bold">
+          <img src="images/icons8-carrito-de-compras-24.png" alt="Carrito" class="w-6 h-6 inline-block mr-2" />
+          Carrito
+          <span id="carrito-contador-mobile"
+            class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow hidden">
+            0
+          </span>
+        </a>
+      </li>
+    </ul>
+    <div id="auth-btn-container-mobile" class="mt-4"></div>
+  </div>
+</header>
+
+
+    <main class="flex justify-center items-center py-8 mb-9">
+        <section>
+            <div class="text-center ">
+                <div class="flex justify-center mb-4">
+  <img src="images/logo.png" alt="Logo" class="w-28 h-auto object-contain" />
+</div>
+
+                <h2 class="text-6xl font-bold py-6 text-black drop-shadow">Catálogo de Productos</h2>
+                <p class="text-3xl text-black font-verdana">Explora nuestra selección de productos disponibles</p>
+            </div>
+        </section>
+    </main>
+    <main>
+        <div id="buscador" class="flex flex-col gap-8 items-center mb-8">
+            <input type="text" id="busqueda" placeholder="Buscar productos..."
+                class="w-full max-w-md border border-gray-500 bg-white text-black rounded-lg px-4 py-2 w-1/2 focus:border-yellow-500 focus:ring-yellow-500
+ placeholder-gray">
+            <div id="categorias" class="flex flex-wrap justify-center items-center gap-2"></div>
+        </div>
+    </main>
+    <main>
+        <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4"></div>
+        
+    </main>
+    <div id="auth-btn-container">
+  <!-- Aquí se insertará el botón según el token -->
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const authBtnContainer = document.getElementById('auth-btn-container');
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      authBtnContainer.innerHTML = `
+        <button id="logout-btn" class="bg-red text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300">Cerrar Sesión</button>
+      `;
+      document.getElementById('logout-btn').addEventListener('click', function() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.reload();
+      });
+    } else {
+      authBtnContainer.innerHTML = `
+        <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300">Iniciar Sesión</a>
+      `;
+    }
+  });
+</script>
+    <footer class="bg-black border-t mt-8 py-4">
+        <div class="container mx-auto text-center text-black-700 font-medium">
+            &copy; 2025 Licorería EL CHAGRA. Todos los derechos reservados.
+        </div>
+    </footer>
+    <script src="app.js"></script>
+    <script>
+function mostrarProductos(productosAMostrar) {
+    contenedorProductos.innerHTML = "";
+    const esAdmin = localStorage.getItem('rol') === 'admin';
+    // Elimina la línea: const tieneToken = !!localStorage.getItem('authToken');
+    if (productosAMostrar.length === 0) {
+        contenedorProductos.innerHTML =
+            "<p class='text-2xl font-bold text-center text-gray-800 col-span-full m-4'>No se encontraron productos.</p>";
+    } else {
+        productosAMostrar.forEach((producto) => {
+            const productoDiv = document.createElement("div");
+            productoDiv.className =
+                "bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border border-black hover:border-yellow-500 transition-colors duration-300";
+            productoDiv.innerHTML = `
+                <img src="${producto.imagen}" alt="${producto.titulo}" class="w-40 h-40 object-contain mb-4 rounded-lg bg-white">
+                <h3 class="text-2xl font-bold text-black mb-2">${producto.titulo}</h3>
+                <p class="text-black mb-2">${producto.descripcion}</p>
+                <p class="text-black font-bold mb-2">$${producto.precio}</p>
+                <p class="text-black mb-2">Stock: ${producto.stock}</p>
+                ${!esAdmin ? `
+                <button class="btn--carrito bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-200 transition-colors duration-300" data-id="${producto.id}">Agregar al carrito</button>
+                ` : ''}
+                <a href="detalle.html?id=${producto.id}" class="bg-[#6b6c57] text-black px-4 py-2 rounded hover:bg-[#bec26f] transition-colors duration-300 mt-2 block text-center">Detalles</a>
+            `;
+            contenedorProductos.appendChild(productoDiv);
+        });
+        // Asignar eventos a los botones "Agregar al carrito"
+        if (!esAdmin) {
+            document.querySelectorAll('.btn--carrito').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const productoId = this.getAttribute('data-id');
+                    await agregarAlCarrito(productoId, 1);
+                });
+            });
+        }
+    }
+}
+    </script>
+
+ 
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+  const rol = localStorage.getItem('rol');
+  const esInicio = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+
+  if (rol === 'admin' && esInicio) {
+    window.location.href = 'indexadmin.html';
+  }
+
+  if (rol === 'cliente') {
+    const carritoLink = document.getElementById('carrito-link');
+    if (carritoLink) carritoLink.style.display = '';
+  }
+});
+
+    </script>
+   <script>
+  // Menú hamburguesa
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken');
+    const rol = localStorage.getItem('rol');
+
+    // Botones protegidos
+    function verificarSesion(event, destino) {
+      if (!token) {
+        event.preventDefault();
+        alert('Debe iniciar sesión para acceder a esta sección.');
+      } else {
+        window.location.href = destino;
+      }
+    }
+
+    const btnPedidos = document.getElementById('btn-pedidos');
+    const btnPedidosMobile = document.getElementById('btn-pedidos-mobile');
+    const btnCarritoMobile = document.getElementById('btn-carrito-mobile');
+
+    if (btnPedidos) {
+      btnPedidos.addEventListener('click', (e) => verificarSesion(e, 'mis-pedidos.html'));
+    }
+
+    if (btnPedidosMobile) {
+      btnPedidosMobile.addEventListener('click', (e) => verificarSesion(e, 'mis-pedidos.html'));
+    }
+
+    if (btnCarritoMobile) {
+      btnCarritoMobile.addEventListener('click', (e) => verificarSesion(e, 'carrito.html'));
+    }
+
+    // Auth buttons para escritorio y móvil
+    const authBtnDesktop = document.getElementById('auth-btn-container');
+    const authBtnMobile = document.getElementById('auth-btn-container-mobile');
+
+    function logout() {
+      fetch('http://127.0.0.1:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      }).finally(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('rol');
+        window.location.href = 'login.html';
+      });
+    }
+
+    if (token) {
+      const btn = `<button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-gray-800 transition">Cerrar sesión</button>`;
+      authBtnDesktop.innerHTML = btn;
+      authBtnMobile.innerHTML = btn;
+    } else {
+      const link = `<a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Iniciar sesión</a>`;
+      authBtnDesktop.innerHTML = link;
+      authBtnMobile.innerHTML = link;
+    }
+
+    // Aseguramos que la función esté global
+    window.logout = logout;
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken'); // revisa si hay sesión
+    const btnCarrito = document.getElementById('btn-carrito-header'); // ícono del carrito
+
+    if (btnCarrito) {
+      btnCarrito.addEventListener('click', function (e) {
+        if (!token) {
+          e.preventDefault(); // detiene la redirección al carrito
+          alert('Debes iniciar sesión para acceder al carrito.'); // muestra el mensaje
+        }
+      });
+    }
+  });
+</script>
+<!-- Toast container -->
+<div id="toast" class="fixed top-6 right-6 bg-red-600 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 z-50"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnPedidos = document.getElementById('btn-pedidos');
+    const toast = document.getElementById('toast');
+
+    function mostrarToast(mensaje) {
+      toast.textContent = mensaje;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 3000);
+    }
+
+    if (btnPedidos) {
+      btnPedidos.addEventListener('click', function (e) {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          e.preventDefault();
+          mostrarToast('Debes iniciar sesión para ver tus pedidos.');
+        } else {
+          window.location.href = 'mis-pedidos.html';
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+
+</html>
